@@ -1,5 +1,9 @@
 # pgPlayground
 
+Disclaimer: I do know, use of tag in Docker image is wrong.
+<br>One more reson not to use this example in anything more than a playground.
+<br>(Plus, I have no intention to ever publish this image, so... :-P )
+
 ## Quick start
 ### Build
 ```
