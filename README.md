@@ -4,7 +4,7 @@
 ### Build
 ```
 $ cd build
-$ ./build/build
+$ ./build
 $ cd -
 ```
 
