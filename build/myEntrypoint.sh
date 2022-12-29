@@ -3,6 +3,7 @@ set -e
 
 /etc/init.d/ssh start
 echo "export PATH=/usr/lib/postgresql/15/bin/:$PATH" >> /var/lib/postgresql/.bashrc
+cp /var/lib/postgresql/.bashrc /var/lib/postgresql/.bash_profile
 chown postgres: /var/lib/postgresql/.bash*
 
 
