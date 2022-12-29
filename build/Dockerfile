@@ -41,7 +41,7 @@ RUN rm -r /usr/share/doc/* && \
     rm -r /usr/share/man/* && \
     rm -r /usr/share/locale/* && \
     rm /var/log/*.log /var/log/lastlog /var/log/wtmp /var/log/apt/*.log /var/log/apt/*.xz
-
+RUN echo -n > /etc/motd
 
 
 ### ### ### ### ### ###
