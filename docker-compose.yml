@@ -1,5 +1,15 @@
 version: "2"
 services:
+  console:
+     hostname: console
+     build: ./build
+     ports:
+         - "22:22"
+     environment:
+         - WHAT_AM_I=console
+     networks:
+         - bridge-docker
+
   pg_red:
      hostname: pg_red
      build: ./build
@@ -9,6 +19,7 @@ services:
          - WHAT_AM_I=primary
      networks:
          - bridge-docker
+
   pg_green:
      hostname: pg_green
      build: ./build
@@ -22,6 +33,7 @@ services:
      networks:
          - bridge-docker
      restart: always
+
   pg_blue:
      hostname: pg_blue
      build: ./build
