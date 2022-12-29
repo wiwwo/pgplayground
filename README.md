@@ -1,14 +1,21 @@
 # pgPlayground
 
 ## Quick start
+### Build
 ```
 $ cd build
 $ ./build/build
 $ cd -
+```
 
+### Start
+```
 $ docker-compose up -d
 $ docker-compose ps
+```
 
+### Play
+```
 $ docker exec -it pgplayground-bastion-1 bash
 
 $ psql -h 127.0.0.1 -Uwiwwo -p5445 postgres
@@ -31,6 +38,13 @@ SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: 
 Type "help" for help.
 
 postgres=#
+```
+
+
+### Leave
+```
+$ docker-compose kill
+$ docker-compose rm
 ```
 
 
