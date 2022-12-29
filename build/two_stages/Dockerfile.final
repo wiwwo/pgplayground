@@ -1,0 +1,5 @@
+FROM wiwwo:pgplaygrd_build
+
+RUN chmod +x /docker-entrypoint-initdb.d/*sh
+
+ENTRYPOINT /docker-entrypoint-initdb.d/myEntrypoint.sh; while true; do sleep 999; done;
