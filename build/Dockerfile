@@ -1,6 +1,6 @@
 FROM debian:bullseye-slim AS pre_bulder
 
-RUN apt-get update && apt-get --assume-yes install wget gnupg ssh
+RUN apt-get update && apt-get --assume-yes install wget gnupg ssh less vim
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main 15" > /etc/apt/sources.list.d/pgdg.list
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && apt-get --assume-yes  --no-install-recommends  install postgresql-15 postgresql-15-pgaudit postgresql-15-pglogical postgresql-15-wal2json postgresql-15-pgpool2 patroni pgbackrest
@@ -22,10 +22,12 @@ RUN chmod 700 /var/lib/postgresql/.ssh; chmod 600 /var/lib/postgresql/.ssh/id_rs
 RUN chmod 700 /root/.ssh; chmod 600 /root/.ssh/id_rsa*;
 
 COPY pgpass /root/.pgpass
+COPY psqlrc /root/.psqlrc
 COPY pgpass /var/lib/postgresql/.pgpass
+COPY psqlrc /var/lib/postgresql/.psqlrc
 RUN chmod 700 /root/.pgpass
 RUN chmod 700 /var/lib/postgresql/.pgpass
-RUN chown postgres: /var/lib/postgresql/.pgpass
+RUN chown postgres: /var/lib/postgresql/.p*
 
 
 

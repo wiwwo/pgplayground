@@ -1,0 +1,16 @@
+\set QUIET 1
+\pset null '[nUlL]'
+\pset numericlocale
+\set COMP_KEYWORD_CASE upper
+\timing
+\set HISTSIZE 2147483647
+\set HISTCONTROL ignoreboth
+\set VERBOSITY verbose
+\pset pager on
+\pset format wrapped
+\set PROMPT1 '\n%[%033[1;32m%]%`date +%H:%M:%S`%[%033[0m%] %n@%m/%/%x\n%R%# '
+\set PROMPT2 '%R%# '
+\set ON_ERROR_ROLLBACK on
+\set AUTOCOMMIT ON
+\set ON_ERROR_STOP true
+\set QUIET 0
