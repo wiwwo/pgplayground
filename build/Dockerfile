@@ -21,6 +21,15 @@ RUN cat /root/.ssh/id_rsa.pub >> /var/lib/postgresql/.ssh/authorized_keys
 RUN chmod 700 /var/lib/postgresql/.ssh; chmod 600 /var/lib/postgresql/.ssh/id_rsa*; chown -R postgres: /var/lib/postgresql/.ssh;
 RUN chmod 700 /root/.ssh; chmod 600 /root/.ssh/id_rsa*;
 
+COPY pgpass /root/.pgpass
+COPY pgpass /var/lib/postgresql/.pgpass
+RUN chmod 700 /root/.pgpass
+RUN chmod 700 /var/lib/postgresql/.pgpass
+RUN chown postgres: /var/lib/postgresql/.pgpass
+
+
+
+
 
 COPY ./postgresql.conf.primary   /etc/postgresql/15/main/
 COPY ./postgresql.conf.secondary /etc/postgresql/15/main/

@@ -20,7 +20,18 @@ Linux pg_red 5.15.49-linuxkit #1 SMP Tue Sep 13 07:51:46 UTC 2022 x86_64
 root@pg_red:~#
 ```
 
+```
+$ docker exec -it pgplayground-console-1 bash
+root@console:/# psql -hpg_red -Uwiwwo postgres
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off)
+Type "help" for help.
+
+postgres=#
+```
+
+
 ## Users
 **All users have pwd= <username>123, eg `wiwwo` pwd `wiwwo123`**
-<br>Available linux users: `root`, `postgres`
+<br><br>Available linux users: `root`, `postgres`
 <br>Available postgres users: `postgres`, `wiwwo`, `repl_user`
