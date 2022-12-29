@@ -2,7 +2,10 @@
 
 ## Quick start
 ```
-$ docker-compose build
+$ cd build
+$ ./build/build
+$ cd -
+
 $ docker-compose up -d
 $ docker-compose ps
 

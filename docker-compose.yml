@@ -1,8 +1,9 @@
 version: "2"
+
 services:
   bastion:
      hostname: bastion
-     build: ./build
+     image: wiwwo:pgplaygrd
      ports:
          - "22:22"
      environment:
@@ -12,7 +13,7 @@ services:
 
   pg_red:
      hostname: pg_red
-     build: ./build
+     image: wiwwo:pgplaygrd
      ports:
          - "5445:5432"
      environment:
@@ -22,7 +23,7 @@ services:
 
   pg_green:
      hostname: pg_green
-     build: ./build
+     image: wiwwo:pgplaygrd
      depends_on:
          - pg_red
      ports:
@@ -36,7 +37,7 @@ services:
 
   pg_blue:
      hostname: pg_blue
-     build: ./build
+     image: wiwwo:pgplaygrd
      depends_on:
          - pg_red
      ports:
@@ -47,5 +48,6 @@ services:
      networks:
          - bridge-docker
      restart: always
+
 networks:
   bridge-docker:
