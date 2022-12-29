@@ -1,0 +1,39 @@
+version: "2"
+services:
+  pg_red:
+     hostname: pg_red
+     build: ./build
+     ports:
+         - "5445:5432"
+     environment:
+         - WHAT_AM_I=primary
+     networks:
+         - bridge-docker
+  pg_green:
+     hostname: pg_green
+     build: ./build
+     depends_on:
+         - pg_red
+     ports:
+         - "5446:5432"
+     environment:
+         - WHAT_AM_I=secondary
+         - NEW_PRIMARY=pg_red
+     networks:
+         - bridge-docker
+     restart: always
+  pg_blue:
+     hostname: pg_blue
+     build: ./build
+     depends_on:
+         - pg_red
+     ports:
+         - "5447:5432"
+     environment:
+         - WHAT_AM_I=secondary
+         - NEW_PRIMARY=pg_red
+     networks:
+         - bridge-docker
+     restart: always
+networks:
+  bridge-docker:
