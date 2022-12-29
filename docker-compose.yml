@@ -1,12 +1,12 @@
 version: "2"
 services:
-  console:
-     hostname: console
+  bastion:
+     hostname: bastion
      build: ./build
      ports:
          - "22:22"
      environment:
-         - WHAT_AM_I=console
+         - WHAT_AM_I=bastion
      networks:
          - bridge-docker
 
