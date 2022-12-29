@@ -49,6 +49,6 @@ $ docker-compose rm
 
 
 ## Users
-**All users have pwd= <username>123, eg `wiwwo` pwd `wiwwo123`**
+**All users have pwd= \<username\>123, eg `wiwwo` pwd `wiwwo123`**
 <br><br>Available linux users: `root`, `postgres`
 <br>Available postgres users: `postgres`, `wiwwo`, `repl_user`
