@@ -332,6 +332,91 @@ Type "help" for help.
 Time: 0.641 ms
 ```
 
+####  Replica of replica
+`pg_red` is master
+
+```
+root@bastion:/# ssh postgres@pg_green
+Warning: Permanently added the ECDSA host key for IP address '172.19.0.5' to the list of known hosts.
+Linux pg_green 5.15.49-linuxkit #1 SMP Tue Sep 13 07:51:46 UTC 2022 x86_64
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA stop
+waiting for server to shut down.... done
+server stopped
+
+postgres@pg_green:~$ sed -i 's/pg_red/pg_blue/g' $PGDATA/postgresql.auto.conf
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA start
+waiting for server to start....
+2023-01-16 14:20:27.529 UTC [78] LOG:  starting PostgreSQL 15.1 (Debian 15.1-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-01-16 14:20:27.529 UTC [78] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-01-16 14:20:27.530 UTC [78] LOG:  could not bind IPv6 address "::1": Cannot assign requested address
+2023-01-16 14:20:27.532 UTC [78] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-01-16 14:20:27.537 UTC [81] LOG:  database system was shut down in recovery at 2023-01-16 14:19:56 UTC
+2023-01-16 14:20:27.537 UTC [81] LOG:  entering standby mode
+2023-01-16 14:20:27.540 UTC [81] LOG:  redo starts at 0/20000D8
+2023-01-16 14:20:27.540 UTC [81] LOG:  consistent recovery state reached at 0/4000060
+2023-01-16 14:20:27.540 UTC [81] LOG:  invalid record length at 0/4000060: wanted 24, got 0
+2023-01-16 14:20:27.540 UTC [78] LOG:  database system is ready to accept read-only connections
+2023-01-16 14:20:27.553 UTC [82] LOG:  started streaming WAL from primary at 0/4000000 on timeline 1
+ done
+server started
+
+postgres@pg_green:~$ psql
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+Type "help" for help.
+
+
+14:20:31 postgres@[local]/postgres
+=# show primary_conninfo ;
+                                                    primary_conninfo
+------------------------------------------------------------------------------------------------------------------------
+ user=repl_user passfile='/var/lib/postgresql/.pgpass' channel_binding=prefer host=pg_blue port=5432 sslmode=prefer ssl.
+.compression=0 sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=prefer krbsrvname=postgres target_session_attrs=any
+(1 row)
+
+Time: 0.446 ms
+
+14:20:34 postgres@[local]/postgres
+=#
+\q
+postgres@pg_green:~$
+logout
+Connection to pg_green closed.
+root@bastion:/#
+```
+Check:
+```
+
+root@bastion:/# ssh postgres@pg_red
+
+postgres@pg_red:~$ psql -c "select sender_host from pg_stat_wal_receiver;"
+ sender_host
+-------------
+(0 rows)
+
+Time: 11.745 ms
+
+
+root@bastion:/# ssh postgres@pg_blue
+
+postgres@pg_blue:~$ psql -c "select sender_host from pg_stat_wal_receiver;"
+ sender_host
+-------------
+ pg_red
+(1 row)
+
+
+root@bastion:/# ssh postgres@pg_green
+
+postgres@pg_green:~$ psql -c  "select sender_host from pg_stat_wal_receiver;"
+ sender_host
+-------------
+ pg_blue
+(1 row)
+
+```
+
 
 ### Leave
 ```
