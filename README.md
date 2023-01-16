@@ -172,6 +172,7 @@ postgres@pg_red:~$
 logout
 Connection to pg_red closed.
 
+---
 
 root@bastion:/# ssh postgres@pg_green
 Warning: Permanently added the ECDSA host key for IP address '172.19.0.4' to the list of known hosts.
@@ -225,10 +226,110 @@ Time: 0.290 ms
 \q
 postgres@pg_green:~$
 logout
-Connection to pg_red closed.
+Connection to pg_green closed.
 
+---
 
 root@bastion:/#
+root@bastion:/#
+root@bastion:/#
+root@bastion:/# ssh postgres@pg_green
+Linux pg_green 5.15.49-linuxkit #1 SMP Tue Sep 13 07:51:46 UTC 2022 x86_64
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA stop
+waiting for server to shut down.... done
+server stopped
+
+
+postgres@pg_green:~$ rm -rf $PGDATA
+
+postgres@pg_green:~$ pg_basebackup -D $PGDATA -h pg_blue -Uwiwwo
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA start
+waiting for server to start....2023-01-16 13:58:53.472 UTC [4316] LOG:  starting PostgreSQL 15.1 (Debian 15.1-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-01-16 13:58:53.473 UTC [4316] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-01-16 13:58:53.473 UTC [4316] LOG:  could not bind IPv6 address "::1": Cannot assign requested address
+2023-01-16 13:58:53.476 UTC [4316] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-01-16 13:58:53.481 UTC [4319] LOG:  database system was interrupted; last known up at 2023-01-16 13:58:44 UTC
+2023-01-16 13:58:53.603 UTC [4319] LOG:  redo starts at 0/7000028
+2023-01-16 13:58:53.605 UTC [4319] LOG:  consistent recovery state reached at 0/7000100
+2023-01-16 13:58:53.605 UTC [4319] LOG:  redo done at 0/7000100 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2023-01-16 13:58:53.636 UTC [4317] LOG:  checkpoint starting: end-of-recovery immediate wait
+2023-01-16 13:58:53.644 UTC [4317] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.003 s, sync=0.001 s, total=0.010 s; sync files=2, longest=0.001 s, average=0.001 s; distance=16384 kB, estimate=16384 kB
+2023-01-16 13:58:53.648 UTC [4316] LOG:  database system is ready to accept connections
+ done
+server started
+postgres@pg_green:~$ psql
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+Type "help" for help.
+
+
+13:58:55 postgres@[local]/postgres
+=# show primary_conninfo ;
+                                                                      primary_conninfo
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ user=repl_user passfile='/var/lib/postgresql/.pgpass' channel_binding=prefer host=pg_blue port=5432 sslmode=prefer sslcompression=0 sslsni=1 ssl_min_proto.
+.col_version=TLSv1.2 gssencmode=prefer krbsrvname=postgres target_session_attrs=any
+(1 row)
+
+Time: 0.268 ms
+
+13:58:58 postgres@[local]/postgres
+=#
+\q
+
+postgres@pg_green:~$
+logout
+Connection to pg_green closed.
+
+root@bastion:/#
+
+
+```
+
+Interesting: `pg_basebackup` can be ran against a replica, and will still follow the correct primary:
+```
+root@bastion:/#
+root@bastion:/# ssh postgres@pg_green
+Linux pg_green 5.15.49-linuxkit #1 SMP Tue Sep 13 07:51:46 UTC 2022 x86_64
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA stop
+waiting for server to shut down.... done
+server stopped
+
+postgres@pg_green:~$ rm -rf $PGDATA
+
+postgres@pg_green:~$ pg_basebackup -D $PGDATA -h pg_red -Uwiwwo
+
+postgres@pg_green:~$ pg_ctl -D $PGDATA start
+waiting for server to start....2023-01-16 14:01:05.518 UTC [4346] LOG:  starting PostgreSQL 15.1 (Debian 15.1-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-01-16 14:01:05.518 UTC [4346] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-01-16 14:01:05.518 UTC [4346] LOG:  could not bind IPv6 address "::1": Cannot assign requested address
+2023-01-16 14:01:05.522 UTC [4346] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-01-16 14:01:05.527 UTC [4349] LOG:  database system was interrupted while in recovery at log time 2023-01-16 13:58:44 UTC
+2023-01-16 14:01:05.527 UTC [4349] HINT:  If this has occurred more than once some data might be corrupted and you might need to choose an earlier recovery target.
+2023-01-16 14:01:05.648 UTC [4349] LOG:  entering standby mode
+2023-01-16 14:01:05.651 UTC [4349] LOG:  redo starts at 0/7000028
+2023-01-16 14:01:05.652 UTC [4349] LOG:  consistent recovery state reached at 0/70000D8
+2023-01-16 14:01:05.652 UTC [4346] LOG:  database system is ready to accept read-only connections
+2023-01-16 14:01:05.653 UTC [4349] LOG:  invalid record length at 0/8000060: wanted 24, got 0
+2023-01-16 14:01:05.664 UTC [4350] LOG:  started streaming WAL from primary at 0/8000000 on timeline 2
+ done
+server started
+
+postgres@pg_green:~$ psql
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+Type "help" for help.
+
+14:01:08 postgres@[local]/postgres
+=# show primary_conninfo ;
+                                                                      primary_conninfo
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ user=wiwwo password=wiwwo123 channel_binding=prefer host=pg_blue port=5432 sslmode=prefer sslcompression=0 sslsni=1 ssl_min_protocol_version=TLSv1.2 gssen.
+.cmode=prefer krbsrvname=postgres target_session_attrs=any
+(1 row)
+
+Time: 0.641 ms
 ```
 
 
