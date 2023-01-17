@@ -8,7 +8,7 @@
 \set VERBOSITY verbose
 \pset pager on
 \pset format wrapped
-\set PROMPT1 '\n%[%033[1;32m%]%`date +%H:%M:%S`%[%033[0m%] %n@%m/%/%x\n%R%# '
+\set PROMPT1 '\n%[%033[1;32m%]%`date +%H:%M:%S`%[%033[0m%] %n@%`hostname`/%/%x\n%R%# '
 \set PROMPT2 '%R%# '
 \set ON_ERROR_ROLLBACK on
 \set AUTOCOMMIT ON
