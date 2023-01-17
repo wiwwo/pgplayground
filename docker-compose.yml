@@ -45,6 +45,7 @@ services:
      environment:
          - WHAT_AM_I=secondary
          - NEW_PRIMARY=pg_red
+         - RECOVERY_MIN_APPLY_DELAY=2
      networks:
          - bridge-docker
      restart: always

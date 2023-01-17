@@ -18,6 +18,8 @@ $ docker-compose up -d
 $ docker-compose ps
 ```
 
+---
+
 ### Play
 ```
 $ docker exec -it pgplayground-bastion-1 bash
@@ -417,6 +419,128 @@ postgres@pg_green:~$ psql -c  "select sender_host from pg_stat_wal_receiver;"
 
 ```
 
+####  Delayed replicas
+In `docker-compose.yml`, change or add `RECOVERY_MIN_APPLY_DELAY`.
+<br>In this example, `pg_blue` runs with `RECOVERY_MIN_APPLY_DELAY=9999`
+
+```
+$ docker exec -it pgplayground-bastion-1 bash
+
+root@bastion:/# ssh postgres@pg_red
+
+postgres@pg_red:~$ pgbench -i
+dropping old tables...
+NOTICE:  table "pgbench_accounts" does not exist, skipping
+NOTICE:  table "pgbench_branches" does not exist, skipping
+NOTICE:  table "pgbench_history" does not exist, skipping
+NOTICE:  table "pgbench_tellers" does not exist, skipping
+creating tables...
+generating data (client-side)...
+100000 of 100000 tuples (100%) done (elapsed 0.12 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done in 0.37 s (drop tables 0.01 s, create tables 0.03 s, client-side generate 0.13 s, vacuum 0.08 s, primary keys 0.12 s).
+postgres@pg_red:~$
+logout
+Connection to pg_red closed.
+
+
+root@bastion:/# ssh postgres@pg_blue
+
+postgres@pg_blue:~$ psql
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+Type "help" for help.
+
+
+09:01:36 postgres@pg_blue/postgres
+=# select count(1) from public.pgbench_accounts; \watch
+ERROR:  42P01: relation "public.pgbench_accounts" does not exist
+LINE 1: select count(1) from public.pgbench_accounts;
+                             ^
+LOCATION:  parserOpenTable, parse_relation.c:1371
+Time: 0.489 ms
+
+
+09:01:41 postgres@pg_blue/postgres
+=# select count(1) from public.pgbench_accounts;
+  count
+---------
+ 100,000
+(1 row)
+
+Time: 11.736 ms
+
+09:01:44 postgres@pg_blue/postgres
+=#
+\q
+postgres@pg_blue:~$
+logout
+Connection to pg_blue closed.
+
+
+root@bastion:/# ssh postgres@pg_red
+
+postgres@pg_red:~$ psql -c 'delete from public.pgbench_accounts;'
+DELETE 100000
+Time: 87.371 ms
+postgres@pg_red:~$
+logout
+Connection to pg_red closed.
+
+
+root@bastion:/# ssh postgres@pg_blue
+
+postgres@pg_blue:~$ psql
+psql (15.1 (Debian 15.1-1.pgdg110+1))
+Type "help" for help.
+
+
+09:02:20 postgres@pg_blue/postgres
+=# select count(1) from public.pgbench_accounts; \watch
+  count
+---------
+ 100,000
+(1 row)
+
+Time: 24.482 ms
+Tue Jan 17 09:02:21 2023 (every 2s)
+
+  count
+---------
+ 100,000
+(1 row)
+
+Time: 22.579 ms
+Tue Jan 17 09:02:23 2023 (every 2s)
+
+  count
+---------
+ 100,000
+(1 row)
+
+Time: 24.786 ms
+Tue Jan 17 09:02:25 2023 (every 2s)
+
+  count
+---------
+ 100,000
+(1 row)
+
+Time: 23.988 ms
+Tue Jan 17 09:02:27 2023 (every 2s)
+
+ count
+-------
+     0
+(1 row)
+
+Time: 7460.188 ms (00:07.460)
+Tue Jan 17 09:02:35 2023 (every 2s)
+
+```
+
+
+---
 
 ### Leave
 ```
