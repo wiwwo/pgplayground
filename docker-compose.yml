@@ -9,7 +9,7 @@ services:
      environment:
          - WHAT_AM_I=bastion
      networks:
-         - bridge-docker
+         - myNetwork0
 
   pg_red:
      hostname: pg_red
@@ -19,7 +19,7 @@ services:
      environment:
          - WHAT_AM_I=primary
      networks:
-         - bridge-docker
+         - myNetwork0
 
   pg_green:
      hostname: pg_green
@@ -32,7 +32,7 @@ services:
          - WHAT_AM_I=secondary
          - NEW_PRIMARY=pg_red
      networks:
-         - bridge-docker
+         - myNetwork0
      restart: always
 
   pg_blue:
@@ -47,8 +47,8 @@ services:
          - NEW_PRIMARY=pg_red
          - RECOVERY_MIN_APPLY_DELAY=2
      networks:
-         - bridge-docker
+         - myNetwork0
      restart: always
 
 networks:
-  bridge-docker:
+  myNetwork0:

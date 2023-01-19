@@ -1,9 +1,13 @@
-FROM debian:bullseye-slim AS pre_bulder
+FROM debian:bullseye  AS pre_bulder
 
 RUN apt-get update && apt-get --assume-yes install wget gnupg ssh less vim
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main 15" > /etc/apt/sources.list.d/pgdg.list
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN apt-get update && apt-get --assume-yes  --no-install-recommends  install postgresql-15 postgresql-15-pgaudit postgresql-15-pglogical postgresql-15-wal2json postgresql-15-pgpool2 patroni pgbackrest
+RUN apt-get update && apt-get --assume-yes  --no-install-recommends  install \
+      postgresql-15 \
+      postgresql-15-pgaudit   postgresql-15-pglogical   postgresql-15-wal2json \
+      postgresql-15-repmgr    postgresql-15-pgpool2 \
+      patroni  pgbackrest  pgpool2  repmgr
 
 
 ### ### ### ### ### ###
@@ -29,14 +33,9 @@ RUN chmod 700 /root/.pgpass
 RUN chmod 700 /var/lib/postgresql/.pgpass
 RUN chown postgres: /var/lib/postgresql/.p*
 
-
-
-
-
 COPY ./postgresql.conf.primary   /etc/postgresql/15/main/
 COPY ./postgresql.conf.secondary /etc/postgresql/15/main/
 COPY ./pg_hba.conf               /etc/postgresql/15/main/
-
 
 COPY ./myEntrypoint.sh /docker-entrypoint-initdb.d/
 
@@ -45,6 +44,11 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     chsh -s /bin/bash \
 RUN echo "root:root123" | chpasswd
 RUN echo "postgres:postgres123" | chpasswd
+
+RUN mkdir /etc/pgpool2/scripts/
+RUN cp -R /usr/share/doc/pgpool2/examples/scripts/* /etc/pgpool2/scripts/
+
+
 
 ### ### ### ### ### ###
 # Cleanup
