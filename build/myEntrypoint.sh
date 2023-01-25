@@ -25,7 +25,7 @@ if [[ $WHAT_AM_I == 'bastion' ]]; then
 
 fi
 
-cp /etc/postgresql/15/main/postgresql.conf.*     /etc/postgresql/15/main/
+
 if [[ $WHAT_AM_I == 'primary' ]]; then
   cp /etc/postgresql/15/main/postgresql.conf.primary     /etc/postgresql/15/main/postgresql.conf
 else
