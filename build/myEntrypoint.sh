@@ -12,6 +12,7 @@ chown postgres: /var/lib/postgresql/.bash*
 echo "alias ll='ls -l --color'" >> /root/.bashrc
 
 WHAT_AM_I=${WHAT_AM_I:-primary}
+echo "I am $WHAT_AM_I"
 
 # Automatically accept ssh fingerprint
 ssh-keyscan -H bastion  >> ~/.ssh/known_hosts
@@ -33,6 +34,7 @@ if [[ $WHAT_AM_I == 'primary' ]]; then
 else
   cp /etc/postgresql/15/main/postgresql.conf.secondary   /etc/postgresql/15/main/postgresql.conf
   if [[ $RECOVERY_MIN_APPLY_DELAY -ne 0 ]]; then
+    echo "Applying recovery_min_apply_delay = $RECOVERY_MIN_APPLY_DELAY"
     echo "recovery_min_apply_delay = $RECOVERY_MIN_APPLY_DELAY" >> /etc/postgresql/15/main/postgresql.conf
   fi
   rm -rf /var/lib/postgresql/15/main
