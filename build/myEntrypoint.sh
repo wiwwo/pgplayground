@@ -9,6 +9,7 @@ echo "alias ll='ls -l --color'" >> /var/lib/postgresql/.bashrc
 cp /var/lib/postgresql/.bashrc /var/lib/postgresql/.bash_profile
 chown postgres: /var/lib/postgresql/.bash*
 
+echo "alias ll='ls -l --color'" >> /root/.bashrc
 
 WHAT_AM_I=${WHAT_AM_I:-primary}
 
