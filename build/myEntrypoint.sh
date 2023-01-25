@@ -12,14 +12,15 @@ chown postgres: /var/lib/postgresql/.bash*
 
 WHAT_AM_I=${WHAT_AM_I:-primary}
 
+# Automatically accept ssh fingerprint
+ssh-keyscan -H bastion  >> ~/.ssh/known_hosts
+ssh-keyscan -H pg_red   >> ~/.ssh/known_hosts
+ssh-keyscan -H pg_green >> ~/.ssh/known_hosts
+ssh-keyscan -H pg_blue  >> ~/.ssh/known_hosts
+cp ~/.ssh/known_hosts /var/lib/postgresql/.ssh
+chown postgres: /var/lib/postgresql/.ssh/known_hosts
+
 if [[ $WHAT_AM_I == 'bastion' ]]; then
-  # Automatically accept ssh fingerprint
-  ssh-keyscan -H bastion  >> ~/.ssh/known_hosts
-  ssh-keyscan -H pg_red   >> ~/.ssh/known_hosts
-  ssh-keyscan -H pg_green >> ~/.ssh/known_hosts
-  ssh-keyscan -H pg_blue  >> ~/.ssh/known_hosts
-  cp ~/.ssh/known_hosts /var/lib/postgresql/.ssh
-  chown postgres: /var/lib/postgresql/.ssh/known_hosts
 
   exit 0
 
