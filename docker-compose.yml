@@ -29,7 +29,7 @@ services:
      ports:
          - "5446:5432"
      environment:
-         - WHAT_AM_I=secondary
+         - WHAT_AM_I=replica
          - NEW_PRIMARY=pg_red
      networks:
          - myNetwork0
@@ -43,7 +43,7 @@ services:
      ports:
          - "5447:5432"
      environment:
-         - WHAT_AM_I=secondary
+         - WHAT_AM_I=replica
          - NEW_PRIMARY=pg_red
          - RECOVERY_MIN_APPLY_DELAY=2
      networks:

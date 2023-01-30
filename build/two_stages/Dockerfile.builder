@@ -30,7 +30,7 @@ RUN chmod 700 /var/lib/postgresql/.pgpass
 RUN chown postgres: /var/lib/postgresql/.p*
 
 COPY ./postgresql.conf.primary   /etc/postgresql/15/main/
-COPY ./postgresql.conf.secondary /etc/postgresql/15/main/
+COPY ./postgresql.conf.replica   /etc/postgresql/15/main/
 COPY ./pg_hba.conf               /etc/postgresql/15/main/
 
 COPY ./myEntrypoint.sh /docker-entrypoint-initdb.d/

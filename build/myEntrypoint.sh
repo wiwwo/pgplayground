@@ -32,7 +32,7 @@ fi
 if [[ $WHAT_AM_I == 'primary' ]]; then
   cp /etc/postgresql/15/main/postgresql.conf.primary     /etc/postgresql/15/main/postgresql.conf
 else
-  cp /etc/postgresql/15/main/postgresql.conf.secondary   /etc/postgresql/15/main/postgresql.conf
+  cp /etc/postgresql/15/main/postgresql.conf.replica     /etc/postgresql/15/main/postgresql.conf
   if [[ $RECOVERY_MIN_APPLY_DELAY -ne 0 ]]; then
     echo "Applying recovery_min_apply_delay = $RECOVERY_MIN_APPLY_DELAY"
     echo "recovery_min_apply_delay = $RECOVERY_MIN_APPLY_DELAY" >> /etc/postgresql/15/main/postgresql.conf
