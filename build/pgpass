@@ -1,3 +1,6 @@
 pg_red:5432:postgres:wiwwo:wiwwo123
 pg_green:5432:postgres:wiwwo:wiwwo123
 pg_blue:5432:postgres:wiwwo:wiwwo123
+pg_red:5432:postgres:repl_user:repl_user123
+pg_green:5432:postgres:repl_user:repl_user123
+pg_blue:5432:postgres:repl_user:repl_user123
