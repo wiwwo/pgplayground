@@ -54,6 +54,7 @@ sleep 2
 
 if [[ $WHAT_AM_I == 'primary' ]]; then
   su postgres -c "psql << EOSQL
+    ALTER USER postgres ENCRYPTED PASSWORD 'postgres123';
     CREATE USER wiwwo LOGIN SUPERUSER ENCRYPTED PASSWORD 'wiwwo123';
     CREATE USER repl_user REPLICATION LOGIN ENCRYPTED PASSWORD 'repl_user123';
 EOSQL
