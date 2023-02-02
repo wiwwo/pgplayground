@@ -57,6 +57,11 @@ if [[ $WHAT_AM_I == 'primary' ]]; then
     ALTER USER postgres ENCRYPTED PASSWORD 'postgres123';
     CREATE USER wiwwo LOGIN SUPERUSER ENCRYPTED PASSWORD 'wiwwo123';
     CREATE USER repl_user REPLICATION LOGIN ENCRYPTED PASSWORD 'repl_user123';
+
+    GRANT EXECUTE ON function pg_catalog.pg_ls_dir(text, boolean, boolean) TO repl_user;
+    GRANT EXECUTE ON function pg_catalog.pg_stat_file(text, boolean) TO repl_user;
+    GRANT EXECUTE ON function pg_catalog.pg_read_binary_file(text) TO repl_user;
+    GRANT EXECUTE ON function pg_catalog.pg_read_binary_file(text, bigint, bigint, boolean) TO repl_user;
 EOSQL
   "
 fi
