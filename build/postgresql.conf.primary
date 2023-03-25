@@ -9,6 +9,8 @@ unix_socket_directories = '/var/run/postgresql'
 
 cluster_name = '15/main'
 
+shared_preload_libraries = 'pg_stat_statements, pg_buffercache'
+
 wal_level = replica
 max_wal_senders = 10
 wal_keep_size = '1GB'
