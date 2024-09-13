@@ -46,7 +46,7 @@ RUN echo "root:root123" | chpasswd
 RUN echo "postgres:postgres123" | chpasswd
 
 RUN mkdir /etc/pgpool2/scripts/
-RUN cp -R /usr/share/doc/pgpool2/examples/scripts/* /etc/pgpool2/scripts/
+#RUN cp -R /usr/share/doc/pgpool2/examples/scripts/* /etc/pgpool2/scripts/
 
 
 

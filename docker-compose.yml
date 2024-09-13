@@ -45,7 +45,7 @@ services:
      environment:
          - WHAT_AM_I=replica
          - NEW_PRIMARY=pg_red
-         - RECOVERY_MIN_APPLY_DELAY=2
+         - RECOVERY_MIN_APPLY_DELAY=2m
      networks:
          - myNetwork0
      restart: always
